@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="refresh" content="30">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <title>Jupiter Explorer!</title>
+  <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+  
+  <style>
+    * {box-sizing: border-box;}
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .topnav {
+      overflow: hidden;
+      background-color: #e9e9e9;
+    }
+
+    .topnav a {
+      float: left;
+      display: block;
+      color: black;
+      text-align: center;
+      padding: 14px 16px;
+      text-decoration: none;
+      font-size: 17px;
+    }
+
+    .topnav a:hover {
+      background-color: #ddd;
+      color: black;
+    }
+
+    .topnav a.active {
+      background-color: #2196F3;
+      color: white;
+    }
+
+    .topnav .search-container {
+      float: right;
+    }
+
+    .topnav input[type=text] {
+      padding: 6px;
+      margin-top: 8px;
+      font-size: 17px;
+      border: none;
+    }
+
+    .topnav .search-container button {
+      float: right;
+      padding: 6px 10px;
+      margin-top: 8px;
+      margin-right: 16px;
+      background: #ddd;
+      font-size: 17px;
+      border: none;
+      cursor: pointer;
+    }
+
+    .topnav .search-container button:hover {
+      background: #ccc;
+    }
+
+    @media screen and (max-width: 600px) {
+      .topnav .search-container {
+        float: none;
+      }
+      .topnav a, .topnav input[type=text], .topnav .search-container button {
+        float: none;
+        display: block;
+        text-align: left;
+        width: 100%;
+        margin: 0;
+        padding: 14px;
+      }
+      .topnav input[type=text] {
+        border: 1px solid #ccc;  
+      }
+    }
+  </style>
+</head>
+<script>
+    var url = 'https://jpr.sigwo.com/nxt?=%2Fnxt&requestType=getBlocks'
+    var blockUrl = 'https://jpr.sigwo.com/nxt?=%2Fnxt&requestType=getBlock&height='
+    var txUrl = ''
+    $.getJSON(url, function(data) {
+      var numbers = [];
+      var genesisDate = new Date("10/21/2017 18:19:28");
+      var genesisEpoch = genesisDate.getTime()/1000.0; 
+      $.each(data.blocks, function(key, block) {
+        var blockEpoch = genesisEpoch+block.timestamp;
+        var blockDate = new Date(blockEpoch*1000);
+        numbers.push("<li>Block Time: " + blockDate.toUTCString() + " | Block Height: <a href=" + blockUrl+block.height +
+          "&includeTransactions=true&includeExecutedPhased=true>" + block.height + "</a> | Block Hash: " + block.block + " | Transactions: " +
+           block.numberOfTransactions + "</li></br>");
+      });
+      $("<ul/>",                                                                                                                                                                                                         {
+        "class": "my-new-list",
+        html: numbers.join("")
+      }).appendTo("body");
+    });
+</script>
+
+<script>
+  function searchBlocks() {
+    var search = $("#blocksearch").val();
+    var url = 'https://jpr.sigwo.com/nxt?=%2Fnxt&requestType=getBlock&height=' + search
+    window.open(url);
+  }
+</script>
+
+<body>
+    <div class="topnav">
+        <a class="active" href="https://explorer.gojupiter.tech">Home</a>
+        <a href="https://metis.sigwo.tech/">Metis</a>
+        <a href="#">Jupiter Block Explorer</a>
+        <div class="search-container">
+            <input type="text" placeholder="Search blocks..." id="blocksearch">
+            <button onClick="searchBlocks()"><i class="fa fa-search"></i></button>
+        </div>
+      </div>
+
+</body>
+</html>
