@@ -2,28 +2,41 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta http-equiv="refresh" content="30">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <title>Jupiter Explorer!</title>
   <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
-  
+
   <style>
     * {box-sizing: border-box;}
 
     body {
       margin: 0;
       font-family: Arial, Helvetica, sans-serif;
+      background-color: #e8d7cf;
+      color: #5b3737;
+    }
+
+    a:link {
+      color: #d36738;
+    }
+
+    a.visited {
+      color: #5b3737;
+    }
+
+    a.hover {
+      color: #f2a26c;
     }
 
     .topnav {
       overflow: hidden;
-      background-color: #e9e9e9;
+      background-color: #d36738;
     }
 
     .topnav a {
       float: left;
       display: block;
-      color: black;
+      color: #5b3737;
       text-align: center;
       padding: 14px 16px;
       text-decoration: none;
@@ -31,13 +44,13 @@
     }
 
     .topnav a:hover {
-      background-color: #ddd;
-      color: black;
+      background-color: #f2a26c;
+      color: #5b3737;
     }
 
     .topnav a.active {
-      background-color: #2196F3;
-      color: white;
+      background-color: #f2a26c;
+      color: #e8d7cf;
     }
 
     .topnav .search-container {
@@ -94,9 +107,9 @@
       $.each(data.blocks, function(key, block) {
         var blockEpoch = genesisEpoch+block.timestamp;
         var blockDate = new Date(blockEpoch*1000);
-        numbers.push("<li>Block Time: " + blockDate.toUTCString() + " | Block Height: <a href=" + blockUrl+block.height +
-          "&includeTransactions=true&includeExecutedPhased=true>" + block.height + "</a> | Block Hash: " + block.block + " | Transactions: " +
-           block.numberOfTransactions + "</li></br>");
+        numbers.push(blockDate.toUTCString() + " &emsp;|&emsp; <a href=" + blockUrl+block.height +
+          "&includeTransactions=true&includeExecutedPhased=true>" + block.height + "</a> &emsp;|&emsp; " + block.numberOfTransactions + " &emsp;|&emsp; " +
+          block.block + "</br>");
       });
       $("<ul/>",                                                                                                                                                                                                         {
         "class": "my-new-list",
@@ -104,7 +117,6 @@
       }).appendTo("body");
     });
 </script>
-
 <script>
   function searchBlocks() {
     var search = $("#blocksearch").val();
@@ -123,6 +135,13 @@
             <button onClick="searchBlocks()"><i class="fa fa-search"></i></button>
         </div>
       </div>
-
+<table>
+  <thead>
+      <th width="300">Timestamp</th>
+      <th width="75">Height</th>
+      <th width="80">Txs</th>
+      <th width="160">Hash</th>
+  </thead>
+</table>
 </body>
 </html>
