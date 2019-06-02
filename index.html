@@ -98,8 +98,9 @@
   </style>
 </head>
 <script>
-    var url = 'https://jpr.sigwo.com/nxt?=%2Fnxt&requestType=getBlocks'
-    var blockUrl = 'https://jpr.sigwo.com/nxt?=%2Fnxt&requestType=getBlock&height='
+    var apiServer = 'https://status.gojupiter.tech'
+    var url = apiServer + "/nxt?=%2Fnxt&requestType=getBlocks"
+    var blockUrl = apiServer + "/nxt?=%2Fnxt&requestType=getBlock&height="
     $.getJSON(url, function(data) {
       var numbers = [];
       var genesisDate = new Date("10/21/2017 18:19:28");
@@ -116,12 +117,10 @@
         html: numbers.join("")
       }).appendTo("body");
     });
-    
-</script>
-<script>
+
   function searchBlocks() {
     var search = $("#blocksearch").val();
-    var url = 'https://jpr.sigwo.com/nxt?=%2Fnxt&requestType=getBlock&height=' + search
+    var url = apiServer + "/nxt?=%2Fnxt&requestType=getBlock&height=" + search
     return url;
   }
 </script>
