@@ -141,13 +141,16 @@
   $.getJSON(url, function(data) {
     var numbers = [];
     var genesisDate = new Date("10/21/2017 18:19:28");
-    var genesisEpoch = genesisDate.getTime()/1000.0; 
+    var genesisEpoch = genesisDate.getTime()/1000.0;
+    var currentHeight = data.blocks[0].height;
+
     $.each(data.blocks, function(key, block) {
       var blockEpoch = genesisEpoch+block.timestamp;
       var blockDate = new Date(blockEpoch*1000);
+      var confirmations = currentHeight - block.height;
       numbers.push(blockDate.toUTCString() + " &emsp;&emsp; <a href=" + blockUrl+block.height +
-        "&includeTransactions=true&includeExecutedPhased=true>" + block.height + "</a> &emsp;&emsp; " + block.numberOfTransactions + " &emsp;&emsp; " +
-        block.block + "</br>");
+        "&includeTransactions=true&includeExecutedPhased=true>" + block.height + "</a> &emsp;&emsp; " + block.numberOfTransactions + 
+        " &emsp;&emsp;&emsp;&emsp; " + confirmations + " &emsp;&emsp;&emsp; " + block.block + "</br>");
     });
     
     $("<ul/>",                                                                                                                                                                                                         {
@@ -183,13 +186,19 @@
   function searchBlocks() {
     var apiServer = 'https://status.gojupiter.tech'
     var search = $("#blocksearch").val();
-    var blocks = apiServer + "/nxt?=%2Fnxt&requestType=getBlock&height=" + search;
+    var height = apiServer + "/nxt?=%2Fnxt&requestType=getBlock&height=" + search;
+    var hash = apiServer + "/nxt?=%2Fnxt&requestType=getBlock&block=" + search + "&includeTransactions=true&includeExecutedPhased=true";
     var tx = apiServer + "/nxt?=%2Fnxt&requestType=getTransaction&transaction=" + search;
     var account = apiServer + "/nxt?=%2Fnxt&requestType=getAccount&account=" + search;
-    $.getJSON(blocks, function(data) {
+    $.getJSON(height, function(data) {
       if(data.height == search ) {
         var doneJSON = JSON.stringify(data, null, 4);
         document.getElementById("block").innerText = doneJSON;
+      } else {
+        $.getJSON(hash, function(data) {
+          if(data.block == search) {
+            var doneJSON = JSON.stringify(data, null, 4);
+            document.getElementById("block").innerText = doneJSON;
       } else {
         $.getJSON(tx, function(data) {
           if(data.transaction == search) {
@@ -207,6 +216,8 @@
       }
     });
     };
+  });
+  };
   });
   };
 </script>
@@ -235,6 +246,7 @@
       <th width="300">Timestamp</th>
       <th width="75">Height</th>
       <th width="80">Txs</th>
+      <th width="35">Confirms</th>
       <th width="160">Hash</th>
     </thead>
   </div>
