@@ -40,7 +40,7 @@
       -webkit-column-rule-style: solid; /* Chrome, Safari, Opera */
       -moz-column-rule-style: solid; /* Firefox */
       column-rule-style: solid;
-      border-bottom-style: solid;
+      /* border-bottom-style: solid; */
       border-top-style: solid;
       border-color: #5b3737;
       border-width: 1px;
@@ -48,20 +48,20 @@
 
     .flex-container {
       display: flex;
-      margin: 10px 0px 10px 35px;
+      margin: 5px 0px 0px 20px;
       background-color: #e8d7cf;
-}
+    }
 
-.flex-container > div {
-  background-color: #f2a26c;
-  margin: 0px 0px 0px 35px;
-  padding: 10px;
-  font-size: 16px;
-  border-style: solid;
-  border-color: #5b3737;
-  border-width: 1px;
-  border-radius: 5px;
-}
+    .flex-container > div {
+      background-color: #f2a26c;
+      margin: 0px 0px 0px 20px;
+      padding: 10px;
+      font-size: 16px;
+      border-style: solid;
+      border-color: #5b3737;
+      border-width: 1px;
+      border-radius: 5px;
+    }
 
     .topnav a {
       float: left;
@@ -77,11 +77,6 @@
       background-color: #f2a26c;
       color: #e8d7cf;
     }
-
-    /* .topnav a.active {
-      background-color: #f2a26c;
-      color: #e8d7cf;
-    } */
 
     .topnav a.visited {
       background-color: #f2a26c;
@@ -158,21 +153,12 @@
   });
 
   //////////
-  // Used to return searched blocks in raw JSON format
+  // Gets unconfirmed Transaction count
   //////////
-  function searchBlocks() {
-    var search = $("#blocksearch").val();
-    var url = apiServer + "/nxt?=%2Fnxt&requestType=getBlock&height=" + search
-    return url;
-  }
-
-  // //////////
-  // // Gets unconfirmed Transaction count
-  // //////////
   var url = apiServer + "/nxt?=%2Fnxt&requestType=getUnconfirmedTransactions"
   $.getJSON(url, function(data) {
     document.getElementById("unconfirmedTxs").innerText= data.unconfirmedTransactions.length;
-  })
+  });
 
   //////////
   // Gets last 100 blocks transaction count
@@ -186,6 +172,15 @@
       });
       document.getElementById("dailyTxs").innerText= dailyTxs; 
   });
+
+  //////////
+  // Used to return searched blocks in raw JSON format
+  //////////
+  function searchBlocks() {
+    var search = $("#blocksearch").val();
+    var url = apiServer + "/nxt?=%2Fnxt&requestType=getBlock&height=" + search
+    return url;
+  };
 </script>
 
 <body>
@@ -201,10 +196,12 @@
   <div>
   <table>
     <div class="explorer">
-      <div class="flex-container">
-        <div>Recent Transactions (last 100 blocks) <span style="font-weight: bold;" id="dailyTxs">&emsp;&emsp;</span></div>
-        <div>Unconfirmed Transactions <span  style="font-weight: bold;" id="unconfirmedTxs"></span>&emsp;</div>
+      <div class="flex-container"> 
+            <div>Recent Transactions (last 100 blocks) <span style="font-weight: bold;" id="dailyTxs">&emsp;&emsp;</span></div>
+          <div>Unconfirmed Transactions <span  style="font-weight: bold;" id="unconfirmedTxs"></span>&emsp;</div>
       </div>
+      </div>
+      
     <thead>
       <th width="300">Timestamp</th>
       <th width="75">Height</th>
