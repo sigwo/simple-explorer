@@ -40,7 +40,6 @@
       -webkit-column-rule-style: solid; /* Chrome, Safari, Opera */
       -moz-column-rule-style: solid; /* Firefox */
       column-rule-style: solid;
-      /* border-bottom-style: solid; */
       border-top-style: solid;
       border-color: #5b3737;
       border-width: 1px;
@@ -177,9 +176,13 @@
   // Used to return searched blocks in raw JSON format
   //////////
   function searchBlocks() {
+    var apiServer = 'https://status.gojupiter.tech'
     var search = $("#blocksearch").val();
-    var url = apiServer + "/nxt?=%2Fnxt&requestType=getBlock&height=" + search
-    return url;
+    var url = apiServer + "/nxt?=%2Fnxt&requestType=getBlock&height=" + search;
+    $.getJSON(url, function(data) {
+      var doneJSON = JSON.stringify(data, null, 2);
+      document.getElementById("block").innerText = doneJSON;
+    })
   };
 </script>
 
@@ -189,15 +192,17 @@
         <a href="https://metis.sigwo.tech/">Metis</a>
         <a href="#">Jupiter Block Explorer</a>
         <div class="search-container">
+            <button onClick="window.location.reload();"><i class="fa fa-refresh"></i></button>
             <input type="text" placeholder="Search block number..." id="blocksearch">
-            <button onClick="location.href=searchBlocks(url)"><i class="fa fa-search"></i></button>
+            <button onClick="searchBlocks();"><i class="fa fa-search"></i></button>
         </div>
       </div>
   <div>
   <table>
     <div class="explorer">
+        <div><span id="block"></span></div>
       <div class="flex-container"> 
-            <div>Recent Transactions (last 100 blocks) <span style="font-weight: bold;" id="dailyTxs">&emsp;&emsp;</span></div>
+          <div>Recent Transactions (last 100 blocks) <span style="font-weight: bold;" id="dailyTxs">&emsp;&emsp;</span></div>
           <div>Unconfirmed Transactions <span  style="font-weight: bold;" id="unconfirmedTxs"></span>&emsp;</div>
       </div>
       </div>
