@@ -131,7 +131,7 @@
   // Main explorer function, displays last blocks for easy viewing
   //////////
   var apiServer = 'https://status.gojupiter.tech'
-  var url = apiServer + "/nxt?=%2Fnxt&requestType=getBlocks&lastIndex=25"
+  var url = apiServer + "/nxt?=%2Fnxt&requestType=getBlocks&lastIndex=60"
   var blockUrl = apiServer + "/nxt?=%2Fnxt&requestType=getBlock&height="
   $.getJSON(url, function(data) {
     var numbers = [];
