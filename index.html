@@ -178,11 +178,31 @@
   function searchBlocks() {
     var apiServer = 'https://status.gojupiter.tech'
     var search = $("#blocksearch").val();
-    var url = apiServer + "/nxt?=%2Fnxt&requestType=getBlock&height=" + search;
-    $.getJSON(url, function(data) {
-      var doneJSON = JSON.stringify(data, null, 4);
-      document.getElementById("block").innerText = doneJSON;
-    })
+    var blocks = apiServer + "/nxt?=%2Fnxt&requestType=getBlock&height=" + search;
+    var tx = apiServer + "/nxt?=%2Fnxt&requestType=getTransaction&transaction=" + search;
+    var account = apiServer + "/nxt?=%2Fnxt&requestType=getAccount&account=" + search;
+    $.getJSON(blocks, function(data) {
+      if(data.height == search ) {
+        var doneJSON = JSON.stringify(data, null, 4);
+        document.getElementById("block").innerText = doneJSON;
+      } else {
+        $.getJSON(tx, function(data) {
+          if(data.transaction == search) {
+            var doneJSON = JSON.stringify(data, null, 4);
+            document.getElementById("block").innerText = doneJSON;
+      } else {
+        $.getJSON(account, function(data) {
+          if(data.accountRS || data.account == search) {
+            var doneJSON = JSON.stringify(data, null, 4);
+            document.getElementById("block").innerText = doneJSON;
+          } else {
+            document.getElementById("block").innerText = "Your search is empty. Try again.";
+          }
+        });
+      }
+    });
+    };
+  });
   };
 </script>
 
@@ -193,7 +213,7 @@
         <a href="#">Jupiter Block Explorer</a>
         <div class="search-container">
             <button onClick="window.location.reload();"><i class="fa fa-refresh"></i></button>
-            <input type="text" placeholder="Search block number..." id="blocksearch">
+            <input type="text" placeholder="Search block/tx/account..." id="blocksearch">
             <button onClick="searchBlocks();"><i class="fa fa-search"></i></button>
         </div>
       </div>
