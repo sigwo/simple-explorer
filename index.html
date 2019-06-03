@@ -33,6 +33,36 @@
       background-color: #d36738;
     }
 
+    .explorer {
+      -webkit-column-count: 1; /* Chrome, Safari, Opera */
+      -moz-column-count: 1; /* Firefox */
+      column-count: 1;
+      -webkit-column-rule-style: solid; /* Chrome, Safari, Opera */
+      -moz-column-rule-style: solid; /* Firefox */
+      column-rule-style: solid;
+      border-bottom-style: solid;
+      border-top-style: solid;
+      border-color: #5b3737;
+      border-width: 1px;
+    }
+
+    .flex-container {
+      display: flex;
+      margin: 10px 0px 10px 35px;
+      background-color: #e8d7cf;
+}
+
+.flex-container > div {
+  background-color: #f2a26c;
+  margin: 0px 0px 0px 35px;
+  padding: 10px;
+  font-size: 16px;
+  border-style: solid;
+  border-color: #5b3737;
+  border-width: 1px;
+  border-radius: 5px;
+}
+
     .topnav a {
       float: left;
       display: block;
@@ -45,12 +75,17 @@
 
     .topnav a:hover {
       background-color: #f2a26c;
-      color: #5b3737;
+      color: #e8d7cf;
     }
 
-    .topnav a.active {
+    /* .topnav a.active {
       background-color: #f2a26c;
       color: #e8d7cf;
+    } */
+
+    .topnav a.visited {
+      background-color: #f2a26c;
+      color: #5b3737;
     }
 
     .topnav .search-container {
@@ -98,36 +133,64 @@
   </style>
 </head>
 <script>
-    var apiServer = 'https://status.gojupiter.tech'
-    var url = apiServer + "/nxt?=%2Fnxt&requestType=getBlocks"
-    var blockUrl = apiServer + "/nxt?=%2Fnxt&requestType=getBlock&height="
-    $.getJSON(url, function(data) {
-      var numbers = [];
-      var genesisDate = new Date("10/21/2017 18:19:28");
-      var genesisEpoch = genesisDate.getTime()/1000.0; 
-      $.each(data.blocks, function(key, block) {
-        var blockEpoch = genesisEpoch+block.timestamp;
-        var blockDate = new Date(blockEpoch*1000);
-        numbers.push(blockDate.toUTCString() + " &emsp;|&emsp; <a href=" + blockUrl+block.height +
-          "&includeTransactions=true&includeExecutedPhased=true>" + block.height + "</a> &emsp;|&emsp; " + block.numberOfTransactions + " &emsp;|&emsp; " +
-          block.block + "</br>");
-      });
-      $("<ul/>",                                                                                                                                                                                                         {
-        "class": "my-new-list",
-        html: numbers.join("")
-      }).appendTo("body");
+  //////////
+  // Main explorer function, displays last blocks for easy viewing
+  //////////
+  var apiServer = 'https://status.gojupiter.tech'
+  var url = apiServer + "/nxt?=%2Fnxt&requestType=getBlocks&lastIndex=25"
+  var blockUrl = apiServer + "/nxt?=%2Fnxt&requestType=getBlock&height="
+  $.getJSON(url, function(data) {
+    var numbers = [];
+    var genesisDate = new Date("10/21/2017 18:19:28");
+    var genesisEpoch = genesisDate.getTime()/1000.0; 
+    $.each(data.blocks, function(key, block) {
+      var blockEpoch = genesisEpoch+block.timestamp;
+      var blockDate = new Date(blockEpoch*1000);
+      numbers.push(blockDate.toUTCString() + " &emsp;&emsp; <a href=" + blockUrl+block.height +
+        "&includeTransactions=true&includeExecutedPhased=true>" + block.height + "</a> &emsp;&emsp; " + block.numberOfTransactions + " &emsp;&emsp; " +
+        block.block + "</br>");
     });
+    
+    $("<ul/>",                                                                                                                                                                                                         {
+      "class": "",
+      html: numbers.join("")
+    }).appendTo("body");
+  });
 
+  //////////
+  // Used to return searched blocks in raw JSON format
+  //////////
   function searchBlocks() {
     var search = $("#blocksearch").val();
     var url = apiServer + "/nxt?=%2Fnxt&requestType=getBlock&height=" + search
     return url;
   }
+
+  // //////////
+  // // Gets unconfirmed Transaction count
+  // //////////
+  var url = apiServer + "/nxt?=%2Fnxt&requestType=getUnconfirmedTransactions"
+  $.getJSON(url, function(data) {
+    document.getElementById("unconfirmedTxs").innerText= data.unconfirmedTransactions.length;
+  })
+
+  //////////
+  // Gets last 100 blocks transaction count
+  //////////
+  var url = apiServer + "/nxt?=%2Fnxt&requestType=getBlocks&lastIndex=100";
+  $.getJSON(url, function(data) {
+    var txs = 0;
+    var dailyTxs = 0;
+      $.each(data.blocks, function(key, block) {
+        dailyTxs += txs + block.numberOfTransactions;
+      });
+      document.getElementById("dailyTxs").innerText= dailyTxs; 
+  });
 </script>
 
 <body>
-    <div class="topnav">
-        <a class="active" href="https://explorer.gojupiter.tech">Home</a>
+    <div  style="font-weight: bold;" class="topnav">
+        <a class="active" href="https://gojupiter.tech">Jupiter</a>
         <a href="https://metis.sigwo.tech/">Metis</a>
         <a href="#">Jupiter Block Explorer</a>
         <div class="search-container">
@@ -135,13 +198,21 @@
             <button onClick="location.href=searchBlocks(url)"><i class="fa fa-search"></i></button>
         </div>
       </div>
-<table>
-  <thead>
+  <div>
+  <table>
+    <div class="explorer">
+      <div class="flex-container">
+        <div>Recent Transactions (last 100 blocks) <span style="font-weight: bold;" id="dailyTxs">&emsp;&emsp;</span></div>
+        <div>Unconfirmed Transactions <span  style="font-weight: bold;" id="unconfirmedTxs"></span>&emsp;</div>
+      </div>
+    <thead>
       <th width="300">Timestamp</th>
       <th width="75">Height</th>
       <th width="80">Txs</th>
       <th width="160">Hash</th>
-  </thead>
-</table>
+    </thead>
+  </div>
+  </table>
+</div>
 </body>
 </html>
