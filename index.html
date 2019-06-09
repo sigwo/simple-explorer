@@ -139,11 +139,12 @@
 </head>
 <script>
   //////////
-  // Main explorer function, displays last blocks for easy viewing
+  // Main explorer function, last blocks for easy viewing
   //////////
   var apiServer = 'https://status.gojupiter.tech'
   var url = apiServer + "/nxt?=%2Fnxt&requestType=getBlocks&lastIndex=60"
-  var blockUrl = apiServer + "/nxt?=%2Fnxt&requestType=getBlock&height="
+  var heightUrl = apiServer + "/nxt?=%2Fnxt&requestType=getBlock&height="
+  var blockUrl = apiServer + "/nxt?=%2Fnxt&requestType=getBlock&block="
   $.getJSON(url, function(data) {
     var numbers = [];
     var genesisDate = new Date("10/21/2017 18:19:28");
@@ -154,9 +155,10 @@
       var blockEpoch = genesisEpoch+block.timestamp;
       var blockDate = new Date(blockEpoch*1000);
       var confirmations = currentHeight - block.height;
-      numbers.push(blockDate.toUTCString() + " &emsp;&emsp; <a href=" + blockUrl+block.height +
+      numbers.push(blockDate.toUTCString() + " &emsp;&emsp; <a href=" + heightUrl+block.height +
         "&includeTransactions=true&includeExecutedPhased=true' rel='modal:open'>" + block.height + "</a> &emsp;&emsp; " + block.numberOfTransactions + 
-        " &emsp;&emsp;&emsp;&emsp; " + confirmations + " &emsp;&emsp;&emsp; " + block.block + "</br>");
+        " &emsp;&emsp;&emsp;&emsp; " + confirmations + " &emsp;&emsp;&emsp; <a href=" + blockUrl+block.block + "&includeTransactions=true' rel='modal:open'>" +
+        block.block + "</a></br>");
     });
     
     $("<ul/>",                                                                                                                                                                                                         {
@@ -241,7 +243,7 @@
   <div>
   <table>
     <div class="explorer">
-        <div class="flex-container"><pre id="block"></pre></div>
+        <div class="flex-container" id="block"></div>
       <div class="flex-container"> 
           <div>Recent Transactions (last 100 blocks) <span style="font-weight: bold;" id="dailyTxs">&emsp;&emsp;</span></div>
           <div>Unconfirmed Transactions <span  style="font-weight: bold;" id="unconfirmedTxs"></span>&emsp;</div>
