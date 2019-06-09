@@ -1,10 +1,15 @@
 <!doctype html>
 <html lang="en">
 <head>
+  <title>Jupiter Explorer!</title>
   <meta charset="utf-8">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-  <title>Jupiter Explorer!</title>
   <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+  <!-- jQuery Modal -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css" />
+  <!-- Print pretty JSON-->
+  <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
 
   <style>
     * {box-sizing: border-box;}
@@ -129,6 +134,7 @@
       font-family: "courier new", courier, monospace;
       font-size: 16px;
     }
+
   </style>
 </head>
 <script>
@@ -149,7 +155,7 @@
       var blockDate = new Date(blockEpoch*1000);
       var confirmations = currentHeight - block.height;
       numbers.push(blockDate.toUTCString() + " &emsp;&emsp; <a href=" + blockUrl+block.height +
-        "&includeTransactions=true&includeExecutedPhased=true>" + block.height + "</a> &emsp;&emsp; " + block.numberOfTransactions + 
+        "&includeTransactions=true&includeExecutedPhased=true' rel='modal:open'>" + block.height + "</a> &emsp;&emsp; " + block.numberOfTransactions + 
         " &emsp;&emsp;&emsp;&emsp; " + confirmations + " &emsp;&emsp;&emsp; " + block.block + "</br>");
     });
     
@@ -198,7 +204,7 @@
         $.getJSON(hash, function(data) {
           if(data.block == search) {
             var doneJSON = JSON.stringify(data, null, 4);
-            document.getElementById("block").innerText = doneJSON;
+            document.getElementById("block") = doneJSON;
       } else {
         $.getJSON(tx, function(data) {
           if(data.transaction == search) {
@@ -228,8 +234,8 @@
         <a href="https://metis.sigwo.tech/">Metis</a>
         <div class="search-container">
             <button onClick="window.location.reload();"><i class="fa fa-refresh"></i></button>
-            <input type="text" placeholder="Search block/tx/account..." id="blocksearch">
-            <button onClick="searchBlocks();"><i class="fa fa-search"></i></button>
+            <input type="text" placeholder="Search block/hash/tx/account..." id="blocksearch">
+            <button onClick="searchBlocks()"><i class="fa fa-search"></i></button>
         </div>
       </div>
   <div>
