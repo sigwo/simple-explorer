@@ -28,6 +28,17 @@
       padding-left: 5px;
     }
 
+    .modal {
+      position: relative;
+      display: table;
+      overflow-y: auto;
+      overflow-x: auto;
+      min-height: 300px;
+      min-width: 300px;
+      word-break: keep-all;
+      white-space: pre-wrap;
+    }
+
     a:link {
       color: #d36738;
     }
@@ -155,7 +166,8 @@
   $.getJSON(url, function(data) {
     var numbers = [];
     $.each(data.peers, function(key, peer) {
-      numbers.push(" &emsp;&emsp; <tr><td><a href=" + apiServer + "getPeer&peer=" + peer.address + " rel='modal:open'>" + peer.address + "</a></td><td> &emsp;&emsp; " + peer.blockchainState + "</td><td> &emsp;&emsp; " + 
+      numbers.push(" &emsp;&emsp; <tr><td> <a href=" + apiServer + "getPeer&peer=" + peer.address + " rel='modal:open'>" + 
+      peer.address + "</a></td><td> &emsp;&emsp; " + peer.blockchainState + "</td><td> &emsp;&emsp; " + 
       peer.platform + "</td><td> &emsp;&emsp; " + peer.version + "</td>");
     });
     
@@ -231,9 +243,9 @@
 <body>
     <div style="font-weight: bold;" class="topnav">
         <a href="index.html">Overview</a>
-        <a href="peers.html">Peers</a>
+        <a class="active" href="peers.html">Peers</a>
         <a href="generators.html">Generators</a>
-        <a class="active" href="https://gojupiter.tech">Jupiter</a>
+        <a href="https://gojupiter.tech">Jupiter</a>
         <a href="https://metis.sigwo.tech/">Metis</a>
         <div class="search-container">
             <button onClick="window.location.reload();"><i class="fa fa-refresh"></i></button>
