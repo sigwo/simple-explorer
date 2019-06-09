@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <title>Jupiter Explorer!</title>
+  <title>Jupiter Explorer! - Peers</title>
   <meta charset="utf-8">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
@@ -20,7 +20,7 @@
       background-color: #e8d7cf;
       color: #5b3737;
     }
-    
+
     td {
       border-bottom: 1px solid black;
       padding-top: 5px;
@@ -82,11 +82,6 @@
       padding: 14px 16px;
       text-decoration: none;
       font-size: 17px;
-    }
-
-    .topnav a:active {
-      background-color: #5b3737;
-      color: #e8d7cf;
     }
 
     .topnav a:hover {
@@ -153,24 +148,14 @@
   //////////
   // Main explorer function, last blocks for easy viewing
   //////////
-  var apiServer = 'https://status.gojupiter.tech'
-  var url = apiServer + "/nxt?=%2Fnxt&requestType=getBlocks&lastIndex=60"
-  var heightUrl = apiServer + "/nxt?=%2Fnxt&requestType=getBlock&height="
-  var blockUrl = apiServer + "/nxt?=%2Fnxt&requestType=getBlock&block="
+  var apiServer = 'https://jpr.sigwo.com/nxt?=%2Fnxt&requestType='
+  var url = apiServer + "getBlocks&lastIndex=25"
+  var accountUrl = apiServer + "getAccount&account="
+  var blockUrl = apiServer + "getBlock&block="
   $.getJSON(url, function(data) {
     var numbers = [];
-    var genesisDate = new Date("10/21/2017 18:19:28");
-    var genesisEpoch = genesisDate.getTime()/1000.0;
-    var currentHeight = data.blocks[0].height;
-
     $.each(data.blocks, function(key, block) {
-      var blockEpoch = genesisEpoch+block.timestamp;
-      var blockDate = new Date(blockEpoch*1000);
-      var confirmations = currentHeight - block.height;
-      numbers.push("<tr><td>" + blockDate.toUTCString() + "</td><td> &emsp;&emsp; <a href=" + heightUrl+block.height +
-        "&includeTransactions=true&includeExecutedPhased=true' rel='modal:open'>" + block.height + "</a></td><td> &emsp;&emsp; " + block.numberOfTransactions + 
-        " </td><td> &emsp;&emsp;&emsp;&emsp; " + confirmations + "</td><td> &emsp;&emsp;&emsp; <a href=" + blockUrl+block.block + 
-        "&includeTransactions=true' rel='modal:open'>" + block.block + "</a></td></tr>");
+      numbers.push("<tr><td><a href=" + accountUrl+block.generatorRS + "&includeAssets=true' rel='modal:open'>" + block.generatorRS + "</a></td>");
     });
     
     $("<ul/>",                                                                                                                                                                                                         {
@@ -182,7 +167,7 @@
   //////////
   // Gets unconfirmed Transaction count
   //////////
-  var url = apiServer + "/nxt?=%2Fnxt&requestType=getUnconfirmedTransactions"
+  var url = apiServer + "getUnconfirmedTransactions"
   $.getJSON(url, function(data) {
     document.getElementById("unconfirmedTxs").innerText= data.unconfirmedTransactions.length;
   });
@@ -190,7 +175,7 @@
   //////////
   // Gets last 100 blocks transaction count
   //////////
-  var url = apiServer + "/nxt?=%2Fnxt&requestType=getBlocks&lastIndex=100";
+  var url = apiServer + "getBlocks&lastIndex=100";
   $.getJSON(url, function(data) {
     var txs = 0;
     var dailyTxs = 0;
@@ -244,10 +229,10 @@
 
 <body>
     <div style="font-weight: bold;" class="topnav">
-        <a class="active" href="index.html">Overview</a>
+        <a href="index.html">Overview</a>
         <a href="peers.html">Peers</a>
         <a href="generators.html">Generators</a>
-        <a href="https://gojupiter.tech">Jupiter</a>
+        <a class="active" href="https://gojupiter.tech">Jupiter</a>
         <a href="https://metis.sigwo.tech/">Metis</a>
         <div class="search-container">
             <button onClick="window.location.reload();"><i class="fa fa-refresh"></i></button>
@@ -266,11 +251,9 @@
       </div>
       
     <thead>
-      <th width="300">Timestamp</th>
-      <th width="75">Height</th>
-      <th width="80">Txs</th>
-      <th width="30">Confirms</th>
-      <th width="160">Hash</th>
+      <tr>
+        <th width="300">Block Generators (last 25)</th>
+      </tr>
     </thead>
   </div>
   </table>
