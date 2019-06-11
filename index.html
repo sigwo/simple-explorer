@@ -28,7 +28,7 @@
       padding-left: 5px;
     }
     
-    .modal {
+    /* .modal {
       position: relative;
       display: table;
       overflow-y: auto;
@@ -37,6 +37,46 @@
       min-width: 300px;
       word-break: keep-all;
       white-space: pre-wrap;
+    } */
+
+    .newModal {
+      display: none; /* Hidden by default */
+      position: fixed; /* Stay in place */
+      z-index: 1; /* Sit on top */
+      padding-top: 100px; /* Location of the box */
+      left: 0;
+      top: 0;
+      width: 100%; /* Full width */
+      height: 100%; /* Full height */
+      overflow: auto; /* Enable scroll if needed */
+      background-color: rgb(0,0,0); /* Fallback color */
+      background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    }
+
+    .modal-content {
+      background-color: #fefefe;
+      margin: auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%;
+    }
+
+    #modal-content-data {
+      padding: 30px;
+    }
+
+    .close {
+      color: #aaaaaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+      color: #000;
+      text-decoration: none;
+      cursor: pointer;
     }
 
     a:link {
@@ -211,6 +251,36 @@
       document.getElementById("dailyTxs").innerText= dailyTxs; 
   });
 
+  function openModal(data) {
+    newModal.style.display = 'block';
+    var modalContent = document.getElementById('modal-content-data');
+
+    var previousBlockHash = data.previousBlockHash;
+    var payloadLength = data.payloadLength;
+    var totalAmountNQT = data.totalAmountNQT;
+    var generationSignature = data.generationSignature;
+    var generator = data.generator;
+    var generatorPublicKey = data.generatorPublicKey;
+    var baseTarget = data.baseTarget;
+    var payloadHash = data.payloadHash;
+    var generatorRS = data.generatorRS;
+    var nextBlock = data.nextBlock;
+    var requestProcessingTime = data.requestProcessingTime;
+    var numberOfTransactions = data.numberOfTransactions;
+    var blockSignature = data.blockSignature;
+    var transactions = data.transactions;
+    var version = data.version;
+    var totalFeeNQT = data.totalFeeNQT;
+    var previousBlock = data.previousBlock;
+    var cumulativeDifficulty = data.cumulativeDifficulty;
+    var block = data.block;
+    var height = data.height;
+    var timestamp = data.timestamp;
+
+    // here is an example of a single line injection
+    modalContent.innerText = 'Block Height: ' + height;
+  }
+
   //////////
   // Used to return searched blocks in raw JSON format
   //////////
@@ -224,22 +294,26 @@
     $.getJSON(height, function(data) {
       if(data.height == search ) {
         var doneJSON = JSON.stringify(data, null, 4);
-        document.getElementById("block").innerText = doneJSON;
+        openModal(data);
+        // document.getElementById("block").innerText = doneJSON;
       } else {
         $.getJSON(hash, function(data) {
           if(data.block == search) {
-            var doneJSON = JSON.stringify(data, null, 4);
-            document.getElementById("block") = doneJSON;
+            // var doneJSON = JSON.stringify(data, null, 4);
+            openModal(data);
+            // document.getElementById("block") = doneJSON;
       } else {
         $.getJSON(tx, function(data) {
           if(data.transaction == search) {
-            var doneJSON = JSON.stringify(data, null, 4);
-            document.getElementById("block").innerText = doneJSON;
+            // var doneJSON = JSON.stringify(data, null, 4);
+            openModal(data);
+            // document.getElementById("block").innerText = doneJSON;
       } else {
         $.getJSON(account, function(data) {
           if(data.accountRS || data.account == search) {
-            var doneJSON = JSON.stringify(data, null, 4);
-            document.getElementById("block").innerText = doneJSON;
+            // var doneJSON = JSON.stringify(data, null, 4);
+            openModal(data);
+            // document.getElementById("block").innerText = doneJSON;
           } else {
             document.getElementById("block").innerText = "Your search is empty. Try again.";
           }
@@ -254,37 +328,46 @@
 </script>
 
 <body>
-    <div style="font-weight: bold;" class="topnav">
-        <a class="active" href="index.html">Overview</a>
-        <a href="peers.html">Peers</a>
-        <a href="generators.html">Generators</a>
-        <a href="https://gojupiter.tech">Jupiter</a>
-        <a href="https://metis.sigwo.tech/">Metis</a>
-        <div class="search-container">
-            <button onClick="window.location.reload();"><i class="fa fa-refresh"></i></button>
-            <input type="text" placeholder="Search block/hash/tx/account..." id="blocksearch">
-            <button onClick="searchBlocks()"><i class="fa fa-search"></i></button>
-        </div>
-      </div>
+  <div style="font-weight: bold;" class="topnav">
+    <a class="active" href="index.html">Overview</a>
+    <a href="peers.html">Peers</a>
+    <a href="generators.html">Generators</a>
+    <a href="https://gojupiter.tech">Jupiter</a>
+    <a href="https://metis.sigwo.tech/">Metis</a>
+    <div class="search-container">
+      <button onClick="window.location.reload();"><i class="fa fa-refresh"></i></button>
+      <input type="text" placeholder="Search block/hash/tx/account..." id="blocksearch">
+      <button onClick="searchBlocks()"><i class="fa fa-search"></i></button>
+    </div>
+  </div>
+
   <div>
-  <table>
-    <div class="explorer">
+    <table>
+      <div class="explorer">
         <div class="flex-container" id="block"></div>
-      <div class="flex-container"> 
+        <div class="flex-container"> 
           <div>Recent Transactions (last 100 blocks) <span style="font-weight: bold;" id="dailyTxs">&emsp;&emsp;</span></div>
           <div>Unconfirmed Transactions <span  style="font-weight: bold;" id="unconfirmedTxs"></span>&emsp;</div>
+        </div>
       </div>
-      </div>
-      
-    <thead>
-      <th width="300">Timestamp</th>
-      <th width="75">Height</th>
-      <th width="80">Txs</th>
-      <th width="30">Confirms</th>
-      <th width="160">Hash</th>
-    </thead>
+        
+      <thead>
+        <th width="300">Timestamp</th>
+        <th width="75">Height</th>
+        <th width="80">Txs</th>
+        <th width="30">Confirms</th>
+        <th width="160">Hash</th>
+      </thead>
+    </table>
   </div>
-  </table>
-</div>
+
+  <div id="newModal" class="newModal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <div id="modal-content-data"></div>
+    </div>
+  </div>
+
+  <script src="modal.js"></script>
 </body>
 </html>
